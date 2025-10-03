@@ -1,5 +1,4 @@
 import numpy as np
-from layers import fn_conv, fn_flatten, fn_linear, fn_pool, fn_relu, fn_softmax, loss_crossentropy, loss_euclidean
 
 def inference(model, input):
     """
@@ -18,13 +17,10 @@ def inference(model, input):
 
     # TODO: FORWARD PROPAGATION CODE
     curr = input
-    params = model['']
-    for i in range(model['layers']):
+    for i in range(num_layers):
         layer = model['layers']
-        type = layer['type']
         f = layer['fwd_fn']
-        params = layer['paramers']
-        curr = f(curr, params[0], params[1], params[2])
+        curr = f(curr, layer['params'], layer['hyper_params'], False)
         activations[i] = curr[:]
    
     ##########################

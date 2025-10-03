@@ -10,9 +10,9 @@ import numpy as np
 from init_layers import init_layers
 from init_model import init_model
 from inference import inference
-from loss_euclidean import loss_euclidean
+from layers.loss_euclidean import loss_euclidean
 from data_utils import get_digits
-from train import train
+#from train import train
 
 def main():
     l = [init_layers('conv', {'filter_size': 2,
@@ -36,6 +36,7 @@ def main():
     output = np.random.rand(10, 20)       # Dummy output
     ground_truth = np.random.rand(10, 20) # Dummy ground truth
     loss, _ = loss_euclidean(output, ground_truth, {}, False)
+    print(loss)
 
 if __name__ == '__main__':
     main()

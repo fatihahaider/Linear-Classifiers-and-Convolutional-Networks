@@ -2,11 +2,11 @@ import numpy as np
 import sys
 sys.path += ['layers']
 sys.path += ['pyc_code']
-from fn_flatten import fn_flatten
-from fn_relu import fn_relu
-from fn_pool import fn_pool
-from fn_softmax import fn_softmax
-from fn_linear import fn_linear
+from layers.fn_flatten import fn_flatten
+from layers.fn_relu import fn_relu
+from layers.fn_pool import fn_pool
+from layers.fn_softmax import fn_softmax
+from layers.fn_linear import fn_linear
 
 ######################################################
 # Set use_pcode to True to use the provided pyc code for layer functions
@@ -16,10 +16,10 @@ use_pcode = False
 # whether to use the provided pyc or your own code for fn_conv function.
 if use_pcode:
     # import the provided pyc implementation
-    from fn_conv_ import fn_conv
+    from pyc_code.fn_conv_ import fn_conv
 else:
     # import your own implementation
-    from fn_conv import fn_conv
+    from layers.fn_conv import fn_conv
 ######################################################
 
 def init_layers(type, info):
