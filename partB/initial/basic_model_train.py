@@ -10,7 +10,7 @@ import numpy as np
 from init_layers import init_layers
 from init_model import init_model
 from inference import inference
-from loss_euclidean import loss_euclidean
+from layers.loss_euclidean import loss_euclidean
 from data_utils import get_digits
 from train import train
 
@@ -18,8 +18,8 @@ def main():
     l = [init_layers('conv', {'filter_size': 3,
                               'filter_depth': 1,
                               'num_filters': 4}),
-         #init_layers('pool', {'filter_size': 2,
-         #                     'stride': 2}),
+         init_layers('pool', {'filter_size': 2,
+                              'stride': 2}),
          init_layers('relu', {}),
          init_layers('flatten', {}),
          init_layers('linear', {'num_in': 144,

@@ -24,11 +24,16 @@ def update_weights(model, grads, hyper_params):
         params = layer['params']
         grad = grads[i]
 
-        #grad['W'] += lmd/a * params['W'] 
-        #grad['W'] += lmd * params['W']
-        params['W'] += -lmd * params['W']  # L2 norm of weights
-        params['W'] += -a * grad['W']
-        params['b'] += -a * grad['b']
+        if 'W' in params: # some layers dont hav e weights 
+            params['W'] -= a * (grad['W'] + lmd * params['W'])
+        if 'b' in params:
+            params['b'] -= a * grad['b']
+
+        # #grad['W'] += lmd/a * params['W'] 
+        # #grad['W'] += lmd * params['W']
+        # params['W'] += -lmd * params['W']  # L2 norm of weights
+        # params['W'] += -a * grad['W']
+        # params['b'] += -a * grad['b']
 
         updated_model['layers'][i]['params'] = params
     

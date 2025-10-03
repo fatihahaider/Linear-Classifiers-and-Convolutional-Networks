@@ -3,8 +3,8 @@ import os
 import sys
 sys.path += ['pyc_code', 'layers']
 
-from fn_conv import fn_conv
-from fn_conv_ import fn_conv as fn_conv_
+from layers.fn_conv import fn_conv
+from pyc_code.fn_conv_ import fn_conv as fn_conv_
 
 def pass_fail(cond):
     if cond:
