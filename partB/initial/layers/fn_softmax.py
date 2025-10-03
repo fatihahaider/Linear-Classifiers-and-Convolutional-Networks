@@ -16,7 +16,9 @@ def fn_softmax(input, params, hyper_params, backprop, dv_output=None):
     """
 
     num_nodes, batch_size = input.shape
-    exp_input = np.exp(input)
+    shift = input - np.max(input, axis=0, keepdims=True)
+    exp_input = np.exp(shift)
+
 
     # Initialize
     output = np.zeros([num_nodes, batch_size])

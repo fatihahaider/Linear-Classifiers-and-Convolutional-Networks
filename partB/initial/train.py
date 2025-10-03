@@ -106,25 +106,31 @@ def train(model, input, label, val_input, val_label, params, numIters, numItersP
         
         #loss
         batch_loss, dv_output = loss_crossentropy(output, batch_labels, {}, True)
-    
-        #accuracy
-        train_accuracies.append(np.sum(np.array([np.argmax(output[j])==np.argmax(batch_labels[j]) for j in range(batch_size)]))/batch_size)
         train_losses.append(batch_loss)
-
+        
+        #accuracy
+        preds = np.argmax(output, axis = 0)
+        train_acc = np.mean(preds == batch_labels)
+        train_accuracies.append(train_acc)
+        #train_accuracies.append(np.sum(np.array([np.argmax(output[j])==np.argmax(batch_labels[j]) for j in range(batch_size)]))/batch_size)
+        
         val_output, _ = inference(model, val_input)
         val_loss, _ = loss_crossentropy(val_output, val_label, {}, False)
-        val_accuracies.append(np.sum(np.array([np.argmax(val_label[j])==np.argmax(val_output[j]) for j in range(len(val_input))]))/len(val_input))
         val_losses.append(val_loss)
+
+        val_preds = np.argmax(val_output, axis=0)      
+        val_acc   = np.mean(val_preds == val_label)    
+        val_accuracies.append(val_acc)
+
+        val_accuracies.append(np.sum(np.array([np.argmax(val_label[j])==np.argmax(val_output[j]) for j in range(len(val_input))]))/len(val_input))
+        
         
         #backprop
         grads = calc_gradient(model, batch, activations, dv_output)
 
         #update 
         model= update_weights(model, grads, update_params)
+        loss= batch_loss
         
-        print(f"Iter {i+1}/{numIters} | "
-            f"Train loss {batch_loss:.4f}, acc {train_accuracies:.4f} | "
-            f"Val loss {val_loss:.4f}, acc {val_accuracies:.4f}")
-    
     ########
     return model, loss, val_losses, val_accuracies, train_losses, train_accuracies 

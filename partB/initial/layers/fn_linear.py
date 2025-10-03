@@ -20,13 +20,11 @@ def fn_linear(input, params, hyper_params, backprop, dv_output=None):
             grad['W']: gradient wrt weights, same size as params['W']
             grad['b']: gradient wrt bias, same size as params['b']
     """
-    print(hyper_params)
 
     W = params['W']
     b = params['b']
 
     num_in, batch_size = input.shape
-    print(num_in)
     if num_in != hyper_params['num_in']:
         print(f"Incorrect number of inputs provided at linear layer.\n Got {num_in} inputs, expected {hyper_params['num_in']}.")
         #raise

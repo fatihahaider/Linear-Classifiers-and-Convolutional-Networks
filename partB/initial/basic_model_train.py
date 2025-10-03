@@ -22,7 +22,7 @@ def main():
                               'stride': 2}),
          init_layers('relu', {}),
          init_layers('flatten', {}),
-         init_layers('linear', {'num_in': 144,
+         init_layers('linear', {'num_in': 36,
                                 'num_out': 10}),
          init_layers('softmax', {})]
 	
