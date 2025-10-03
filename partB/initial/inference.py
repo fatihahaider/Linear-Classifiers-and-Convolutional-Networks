@@ -18,18 +18,14 @@ def inference(model, input):
 
     # TODO: FORWARD PROPAGATION CODE
     curr = input
+    params = model['']
     for i in range(model['layers']):
-        layer = model['layers'][i]
+        layer = model['layers']
         type = layer['type']
-        if(type=='conv'):
-            f = fn_conv
-        elif(type=='flatten'):
-            f = fn_flatten
-        elif(type=='')
-        curr = layer(curr)
+        f = layer['fwd_fn']
+        params = layer['paramers']
+        curr = f(curr, params[0], params[1], params[2])
         activations[i] = curr[:]
-    
-    output=curr
    
     ##########################
     output = activations[-1]
