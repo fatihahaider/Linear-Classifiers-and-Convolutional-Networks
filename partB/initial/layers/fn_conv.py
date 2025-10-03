@@ -35,13 +35,10 @@ def fn_conv(input, params, hyper_params, backprop, dv_output=None):
     
     # TODO: FORWARD CODE
     #       Update output with values
-    for b in range(batch_size):
-        for f in range(num_filters):
-            acc = np.zeros((out_height, out_width))
-            for c in range(num_channels):
-                acc += scipy.signal.correlate2d(input[:,:,c,b], params['W'][:,:,c,f], mode='valid')
-            acc += params['b'][f]
-            output[:,:,f,b] = acc
+    for k in range(batch_size):
+        for l in range(num_filters):
+            #output[:,:,l,k] = np.vectorize(lambda x: fn_relu(x, 0, 0, False)[0])(scipy.signal.convolve(input[:,:,:,k], params['W'][:,:,:,l], mode='valid')[:,:,0] + params['b'][l,0])
+            output[:,:,l,k] = scipy.signal.correlate(input[:,:,:,k], params['W'][:,:,:,l], mode='valid')[:,:,0] + params['b'][l,0]
 
     #######################
 
@@ -50,32 +47,48 @@ def fn_conv(input, params, hyper_params, backprop, dv_output=None):
         dv_input = np.zeros(input.shape)
         grad['W'] = np.zeros(params['W'].shape)
         grad['b'] = np.zeros(params['b'].shape)
+        
+        # TODO: BACKPROP CODE
+        #       Update dv_input and grad with values
+        for l in range(num_filters):
+            for j in range(filter_depth):
+                sum = 0
+                for k in range(batch_size):
+                    sum += scipy.signal.correlate(input[:,:,j,k], dv_output[:,:,l,k], mode='valid')
+                grad['W'][:,:,j,l] = sum/batch_size
 
-    # dv_input
-    for b in range(batch_size):
-        for f in range(num_filters):
-            for c in range(num_channels):
-                dv_input[:,:,c,b] += scipy.signal.convolve2d(
-                    dv_output[:,:,f,b],
-                    params['W'][:,:,c,f],
-                    mode='full'
-                )
+        for l in range(num_filters):
+            sum = 0
+            for k in range(batch_size):
+                sum += np.sum(dv_output[:,:,l,k])
+            grad['b'][l,0] = sum / batch_size
 
-    # grad W
-    for b in range(batch_size):
-        for f in range(num_filters):
-            for c in range(num_channels):
-                grad['W'][:,:,c,f] += scipy.signal.correlate2d(
-                    input[:,:,c,b],
-                    dv_output[:,:,f,b],
-                    mode='valid'
-                )
+        #for l in range(num_filters):
+         #   for j in range(filter_depth):
+          ##         dv_input[:,:,j,k] += scipy.signal.correlate(params['W'][:,:,j,l], dv_output[:,:,l,k], mode='valid')
 
-    # grad b
-    for f in range(num_filters):
-        grad['b'][f] = np.sum(dv_output[:,:,f,:]) / batch_size
+        #for l in range(num_filters):
+        #    for j in range(filter_depth):
+        #        for k in range(batch_size):
+        #            result = scipy.signal.correlate(np.flip(params['W'][:,:,j,l]), dv_output[:,:,l,k], mode='full')
+        #            dv_input[:,:,j,k] = result
 
-    grad['W'] /= batch_size
+        for j in range(filter_depth):
+            for k in range(batch_size):
+                sum = 0
+                for l in range(num_filters):
+                    sum += scipy.signal.convolve(params['W'][:,:,j,l], dv_output[:,:,l,k], mode='full')
+                dv_input[:,:,j,k] = sum
+
+        #for j in range(filter_depth):
+         #   for k in range(batch_size):
+          #      result = scipy.signal.correlate(params['W'][:,:,j,:], dv_output[:,:,:,k],)
+           #     dv_input[:,:,j,k] = result
+
+        #for l in range(num_filters):
+        #    for k in range(batch_size):
+        #        result = scipy.signal.correlate(params['W'][:,:,:,l], dv_output[:,:,l,k])
+    
 
         ###########################
     return output, dv_input, grad
