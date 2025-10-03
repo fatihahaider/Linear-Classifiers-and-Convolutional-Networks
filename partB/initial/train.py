@@ -1,7 +1,7 @@
 import sys
 sys.path += ['layers']
 import numpy as np
-from loss_crossentropy import loss_crossentropy
+from layers.loss_crossentropy import loss_crossentropy
 import copy
 
 ######################################################
@@ -80,6 +80,11 @@ def train(model, input, label, val_input, val_label, params, numIters, numItersP
     num_layers = len(model["layers"])
     velocities = [None, ] * num_layers
 
+    num_inputs = input.shape[-1]
+    num_val = val_input.shape[-1]
+
+
+    epoch_loss = 0
     for i in range(numIters):
         # TODO: One training iteration
         # Steps:
@@ -91,6 +96,24 @@ def train(model, input, label, val_input, val_label, params, numIters, numItersP
         # Optionally,
         #   (1) Monitor the progress of training
         #   (2) Save your learnt model, using ``np.savez(save_file, **model)``
+        bs = params['batch_size']
+        j = np.random.randint(0, num_inputs-bs)
+        batch = input[...,j:j+bs] # random sample of data 
+        batch_labels = label[j:j+bs]
+        output, activations = inference(model, batch)
+        
+        loss, dv_output = loss_crossentropy(output, batch_labels, {}, True)
+    
+        train_accuracies.append(np.sum(np.array([np.argmax(output[j])==np.argmax(batch_labels[j]) for j in range(batch_size)]))/batch_size)
+
+        val_output, _ = inference(model, val_input)
+        val_loss, _ = loss_crossentropy(val_output, val_label, {}, False)
+        val_accuracies.append(np.sum(np.array([np.argmax(val_label[j])==np.argmax(val_output[j]) for j in range(len(val_input))]))/len(val_input))
+        val_losses.append(val_loss)
+        
+        grads = calc_gradient(model, batch, activations, dv_output)
+
+        model= update_weights(model, grads, params)
         
     
     ########

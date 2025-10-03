@@ -24,7 +24,7 @@ def update_weights(model, grads, hyper_params):
         params = layer['params']
         grad = grads[i]
 
-        if 'W' in params: # some layers dont hav e weights 
+        if 'W' in params: # some layers dont have weights 
             params['W'] -= a * (grad['W'] + lmd * params['W'])
         if 'b' in params:
             params['b'] -= a * grad['b']
