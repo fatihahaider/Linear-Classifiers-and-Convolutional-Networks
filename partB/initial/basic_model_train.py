@@ -41,6 +41,7 @@ def main():
     	'save_file':"model.npz"
     }
     model, loss, val_losses, val_accuracies, train_losses, train_accuracies = train(model, X_train, y_train, X_test, y_test, params, 5, 1)
+    print(val_accuracies)
 
 if __name__ == '__main__':
     main()

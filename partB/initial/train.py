@@ -122,7 +122,7 @@ def train(model, input, label, val_input, val_label, params, numIters, numItersP
         val_acc   = np.mean(val_preds == val_label)    
         val_accuracies.append(val_acc)
 
-        val_accuracies.append(np.sum(np.array([np.argmax(val_label[j])==np.argmax(val_output[j]) for j in range(len(val_input))]))/len(val_input))
+        #val_accuracies.append(np.sum(np.array([np.argmax(val_label[j])==np.argmax(val_output[j]) for j in range(len(val_input))]))/len(val_input))
         
         #backprop
         grads = calc_gradient(model, batch, activations, dv_output)
