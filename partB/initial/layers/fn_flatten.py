@@ -26,7 +26,7 @@ def fn_flatten(input, params, hyper_params, backprop, dv_output=None):
             'b': np.zeros(0)}
 
     if backprop:
-        assert dv_input is not None
+        assert dv_output is not None
         dv_input = np.reshape(dv_output, in_dim, order='F')
 
     return output, dv_input, grad
